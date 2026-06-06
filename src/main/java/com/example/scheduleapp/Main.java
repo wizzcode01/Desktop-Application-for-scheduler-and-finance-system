@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -50,17 +51,10 @@ public class Main extends Application {
                "-fx-alignment: BASELINE_LEFT;" +
                "-fx-cursor: hand;";
 
-       tasksBtn.setStyle(btnStyle);
-       financeBtn.setStyle(btnStyle);
-       completedBtn.setStyle(btnStyle);
-       ListAllBtn.setStyle(btnStyle);
-       Notification.setStyle(btnStyle);
-
-       tasksBtn.setMaxWidth(Double.MAX_VALUE);
-       financeBtn.setMaxWidth(Double.MAX_VALUE);
-       completedBtn.setMaxWidth(Double.MAX_VALUE);
-       ListAllBtn.setMaxWidth(Double.MAX_VALUE);
-       Notification.setMaxWidth(Double.MAX_VALUE);
+       for(Button b : new Button[]{tasksBtn, financeBtn, completedBtn, ListAllBtn, Notification}){
+           b.setStyle(btnStyle);
+           b.setMaxWidth(Double.MAX_VALUE);
+       }
 
        // SIDEBAR
        VBox sidebar = new VBox(20, tasksBtn, financeBtn, completedBtn, ListAllBtn, Notification);
@@ -71,6 +65,11 @@ public class Main extends Application {
        // CENTER CONTENT
        Label content = new Label("👈  Select a menu item to get started");
        content.setStyle("-fx-font-size: 16px; -fx-text-fill: #888888;");
+       StackPane center = new StackPane(content);
+
+       // SCREENS
+       TaskScreen taskScreen = new TaskScreen();
+       AllTasksScreen allTasksScreen
 
        // BUTTON ACTIONS
        tasksBtn.setOnAction(e -> content.setText("Tasks screen coming soon"));
@@ -81,12 +80,12 @@ public class Main extends Application {
        BorderPane root = new BorderPane();
        root.setTop(titleBar);
        root.setLeft(sidebar);
-       root.setCenter(content);
+       root.setCenter(center);
        root.setStyle("-fx-background-color: #F4F6F7;");
 
-       Scene scene = new Scene(root, 750, 520);
+       Scene scene = new Scene(root, 800, 540);
        Stage stage = new Stage();
-       stage.setTitle("Wisdom App");
+       stage.setTitle("wiSchedule");
        stage.setScene(scene);
        stage.show();
    }
