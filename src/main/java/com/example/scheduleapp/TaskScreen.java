@@ -25,15 +25,16 @@ public class TaskScreen {
 
         TextField taskInput = new TextField();
         taskInput.setPromptText("Enter today todo task...");
-        taskInput.setPrefWidth(280);
+        taskInput.setPrefWidth(250);
 
         TextField timeInput = new TextField();
-        timeInput.setPromptText("Set alarm time for this task e.g 14:30:00");
+        timeInput.setPromptText("Set alarm time your task e.g 14:30:00");
         timeInput.setPrefWidth(200);
 
         Button addBtn = new Button("+ Add Task");
         addBtn.setStyle("-fx-background-color: #2C3E50; -fx-text-fill: white;" +
                 "-fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 8 16;");
+        HBox.setMargin(addBtn, new Insets(0, 0, 10, 0));
         HBox inputRow = new HBox(10, taskInput, timeInput, addBtn);
         inputRow.setPadding(new Insets(10, 0, 10, 0));
 

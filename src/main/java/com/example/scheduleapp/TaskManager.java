@@ -48,4 +48,45 @@ public class TaskManager {
             System.out.println("No saved tasks found.");
         }
     }
+
+    public void deleteTaskFromUI(Task taskToDelete){
+        tasks.removeIf(t -> t.getTask().equals(taskToDelete.getTask()));
+        saveTasksToFile();
+    }
+
+    public void markTaskCompleteFromUI(Task taskToComplete){
+       for(Task t : tasks){
+           if(t.getTask().equals(taskToComplete.getTask())){
+               t.setStatus("completed");
+           }
+       }
+    }
+
+    public void loadCompletedTasksIntoTable(javafx.scene.control.TableView<Task> table) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(writeFilePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty()) continue;
+                String[] parts = line.split("\\|");
+                if (parts.length >= 3 && parts[2].trim().equalsIgnoreCase("completed")) {
+                    Task task = new Task(parts[0].trim(), LocalTime.parse(parts[1].trim()));
+                    task.setStatus("completed");
+                    table.getItems().add(task);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("No completed tasks found.");
+        }
+    }
+
+    private void saveTasksToFile() {
+        try (FileWriter writer = new FileWriter(writeFilePath)) {
+            for (Task task : tasks) {
+                writer.write(task.getTask() + "|" + task.getAlarmTime() + "\n");
+            }
+        } catch (IOException e) {
+            System.out.println("Could not write into file");
+        }
+    }
 }

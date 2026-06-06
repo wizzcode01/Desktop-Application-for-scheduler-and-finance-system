@@ -69,12 +69,7 @@ public class Main extends Application {
 
        // SCREENS
        TaskScreen taskScreen = new TaskScreen();
-       AllTasksScreen allTasksScreen
-
-       // BUTTON ACTIONS
-       tasksBtn.setOnAction(e -> content.setText("Tasks screen coming soon"));
-       financeBtn.setOnAction(e -> content.setText("Finance screen coming soon"));
-       completedBtn.setOnAction(e -> content.setText("Completed screen coming soon"));
+       //AllTasksScreen allTasksScreen
 
        // ROOT LAYOUT
        BorderPane root = new BorderPane();
@@ -82,6 +77,11 @@ public class Main extends Application {
        root.setLeft(sidebar);
        root.setCenter(center);
        root.setStyle("-fx-background-color: #F4F6F7;");
+
+       // BUTTON ACTIONS
+       tasksBtn.setOnAction(e -> root.setCenter(taskScreen.getScreen()));
+       financeBtn.setOnAction(e -> content.setText("Finance screen coming soon"));
+       completedBtn.setOnAction(e -> content.setText("Completed screen coming soon"));
 
        Scene scene = new Scene(root, 800, 540);
        Stage stage = new Stage();

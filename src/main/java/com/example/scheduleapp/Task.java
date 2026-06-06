@@ -32,11 +32,11 @@ public class Task {
     public void updateStatus() {
         LocalTime now = LocalTime.now();
         if (alarmTime.equals(now)) {
-            status = "it is time...";
+            status = "it is time";
         } else if (alarmTime.isAfter(now)) {
             status = "pending...";
         } else {
-            status = "time passed...";
+            status = "time passed";
         }
     }
 
