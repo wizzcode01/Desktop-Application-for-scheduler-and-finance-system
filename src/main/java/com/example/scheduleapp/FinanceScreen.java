@@ -81,5 +81,4 @@ public class FinanceScreen {
         screen.setPadding(new Insets(25));
         return screen;
     }
-    }
 }

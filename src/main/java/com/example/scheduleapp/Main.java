@@ -69,7 +69,9 @@ public class Main extends Application {
 
        // SCREENS
        TaskScreen taskScreen = new TaskScreen();
-       //AllTasksScreen allTasksScreen
+       AllTasksScreen allTasksScreen = new AllTasksScreen();
+       FinanceScreen financeScreen = new FinanceScreen();
+       CompletedScreen completedScreen = new CompletedScreen();
 
        // ROOT LAYOUT
        BorderPane root = new BorderPane();
@@ -80,8 +82,9 @@ public class Main extends Application {
 
        // BUTTON ACTIONS
        tasksBtn.setOnAction(e -> root.setCenter(taskScreen.getScreen()));
-       financeBtn.setOnAction(e -> content.setText("Finance screen coming soon"));
-       completedBtn.setOnAction(e -> content.setText("Completed screen coming soon"));
+       ListAllBtn.setOnAction(e -> root.setCenter(allTasksScreen.getScreen()));
+       financeBtn.setOnAction(e -> root.setCenter(financeScreen.getScreen()));
+       completedBtn.setOnAction(e -> root.setCenter(completedScreen.getScreen()));
 
        Scene scene = new Scene(root, 800, 540);
        Stage stage = new Stage();
