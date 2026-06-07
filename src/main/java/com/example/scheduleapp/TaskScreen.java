@@ -49,10 +49,13 @@ public class TaskScreen {
         TableColumn<Task, String> timeCol = new TableColumn<>("Alarm Time");
         timeCol.setCellValueFactory(new PropertyValueFactory<>("alarmTime"));
 
+        TableColumn<Task, String> dateCol = new TableColumn<>("Date Added");
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("dateAdded"));
+
         TableColumn<Task, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        table.getColumns().addAll(taskCol, timeCol, statusCol);
+        table.getColumns().addAll(taskCol, timeCol, dateCol, statusCol);
 
         // STATUS MESSAGE
         Label statusLabel = new Label("");
@@ -73,6 +76,11 @@ public class TaskScreen {
                 Task task = new Task(taskName, alarmTime);
                 task.updateStatus();
                 table.getItems().add(task);
+                table.getItems().sort((t1, t2) -> {
+                    int dateCompare = t2.getDate().compareTo(t1.getDate());
+                    if(dateCompare != 0) return dateCompare;
+                    return t2.getAlarmTime().compareTo(t1.getAlarmTime());
+                });
                 taskManager.addTaskFromUI(task);
                 taskInput.clear();
                 timeInput.clear();
@@ -86,6 +94,12 @@ public class TaskScreen {
 
         // LOAD existing tasks
         taskManager.loadTasksIntoTable(table);
+        // Sort: latest date first, then latest time first within same day
+        table.getItems().sort((t1, t2) -> {
+            int dateCompare = t2.getDate().compareTo(t1.getDate());
+            if (dateCompare != 0) return dateCompare;
+            return t2.getAlarmTime().compareTo(t1.getAlarmTime());
+        });
 
         VBox screen = new VBox(15, header, inputRow, table, statusLabel);
         screen.setPadding(new Insets(25));

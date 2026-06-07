@@ -59,12 +59,12 @@ public class Main extends Application {
        // SIDEBAR
        VBox sidebar = new VBox(20, tasksBtn, financeBtn, completedBtn, ListAllBtn, Notification);
        sidebar.setStyle("-fx-background-color: #2C3E50;");
-       sidebar.setPadding(new Insets(20));
+       sidebar.setPadding(new Insets(50, 20, 20, 20));
        sidebar.setPrefWidth(180);
 
        // CENTER CONTENT
        Label content = new Label("👈  Select a menu item to get started");
-       content.setStyle("-fx-font-size: 16px; -fx-text-fill: #888888;");
+       content.setStyle("-fx-font-size: 17px; -fx-text-fill: #888888;");
        StackPane center = new StackPane(content);
 
        // SCREENS

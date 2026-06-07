@@ -6,18 +6,19 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class TaskManager {
-    String filePath = "codes\\file_example_WAV_1MG.wav";
+    String filePath = "C:\\Users\\HomePC\\Downloads\\file_example_WAV_1MG.wav";
     String writeFilePath = "c:\\Users\\HomePC\\Desktop\\task-db.txt";
     private ArrayList<Task> tasks = new ArrayList<>();
 
     public void addTaskFromUI(Task task){
         tasks.add(task);
         try (FileWriter writer = new FileWriter(writeFilePath, true)) {
-            writer.write( task.getTask()+ "|" + task.getAlarmTime() + "\n");
+            writer.write( task.getTask()+ "|" + task.getAlarmTime() +  "|" + task.getDate() + "|" + task.getStatus() + "\n");
         } catch (IOException e) {
             System.out.println("Could not save task to file");
         }
@@ -40,6 +41,14 @@ public class TaskManager {
                     // String status = parts[2].trim();
 
                     Task task = new Task(name, LocalTime.parse(time));
+                    if(parts.length >= 3 && !parts[2].trim().isEmpty()){
+                        try{
+                            task.setDate(LocalDate.parse(parts[2].trim()));
+                        }catch(Exception e){
+                            task.setDate(LocalDate.now());
+                        }
+                    }
+
                     task.updateStatus();
                     table.getItems().add(task);
                 }
@@ -60,6 +69,8 @@ public class TaskManager {
                t.setStatus("completed");
            }
        }
+
+       saveTasksToFile();
     }
 
     public void loadCompletedTasksIntoTable(javafx.scene.control.TableView<Task> table) {
@@ -71,6 +82,16 @@ public class TaskManager {
                 String[] parts = line.split("\\|");
                 if (parts.length >= 3 && parts[2].trim().equalsIgnoreCase("completed")) {
                     Task task = new Task(parts[0].trim(), LocalTime.parse(parts[1].trim()));
+
+                    // load saved date if it exists, otherwise use today
+                    if (parts.length >= 3 && !parts[2].trim().isEmpty()) {
+                        try {
+                            task.setDate(LocalDate.parse(parts[2].trim()));
+                        } catch (Exception e) {
+                            task.setDate(LocalDate.now());
+                        }
+                    }
+
                     task.setStatus("completed");
                     table.getItems().add(task);
                 }
@@ -83,10 +104,14 @@ public class TaskManager {
     private void saveTasksToFile() {
         try (FileWriter writer = new FileWriter(writeFilePath)) {
             for (Task task : tasks) {
-                writer.write(task.getTask() + "|" + task.getAlarmTime() + "\n");
+                writer.write(task.getTask() + "|" + task.getAlarmTime() + "|" + task.getDate() + "|" + task.getStatus() + "\n");
             }
         } catch (IOException e) {
             System.out.println("Could not write into file");
         }
+    }
+
+    private void sortTaskByDate(){
+
     }
 }

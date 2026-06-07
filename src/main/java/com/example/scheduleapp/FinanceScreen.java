@@ -50,12 +50,12 @@ public class FinanceScreen {
                 NumberFormat fmt = NumberFormat.getNumberInstance();
                 resultBox.getChildren().clear();
 
-                Label title = new Label("💰 Money received: ₦" + fmt.format(money));
+                Label title = new Label("Money received: ₦" + fmt.format(money));
                 title.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
                 resultBox.getChildren().add(title);
 
                 String[][] breakdown = {
-                        {"🙏 Give to God (10%)",        String.valueOf(0.10 * money)},
+                        {"🙏 Give (10%)",        String.valueOf(0.10 * money)},
                         {"🏦 Save (15%)",                String.valueOf(0.15 * money)},
                         {"🛒 Buy what you need (30%)",   String.valueOf(0.30 * money)},
                         {"🍽 Get food (40%)",             String.valueOf(0.40 * money)},
@@ -69,7 +69,7 @@ public class FinanceScreen {
                 }
 
                 statusLabel.setTextFill(Color.GREEN);
-                statusLabel.setText("✅ Analysis complete.");
+                statusLabel.setText("Analysis complete.");
 
             } catch (NumberFormatException ex) {
                 statusLabel.setTextFill(Color.RED);

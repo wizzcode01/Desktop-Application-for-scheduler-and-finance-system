@@ -1,10 +1,12 @@
 package com.example.scheduleapp;
 
+import javax.print.attribute.standard.Media;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.Scanner;
+import javafx.scene.media.MediaPlayer;
 
 public class AlarmClock implements Runnable{
     private final String filePath;
@@ -43,23 +45,15 @@ public class AlarmClock implements Runnable{
     private void playSound(String filePath) {
         File audioFile = new File(filePath);
 
-        try (AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile)) {
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
-            // System.out.println("Press Enter to stop the alarm: ");
-            // scanner.nextLine();
-            Thread.sleep(10000);
-            clip.stop();
-
-            // scanner.close();
+        try {
+                javafx.scene.media.Media sound = new javafx.scene.media.Media(new java.io.File(filePath).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                mediaPlayer.play();
+                Thread.sleep(10000);
+                mediaPlayer.stop();
         } catch (InterruptedException e) {
             System.out.println("Alarm was interrupted");
-        } catch (UnsupportedAudioFileException e) {
-            System.out.println("Audio file format is not supported");
-        } catch (LineUnavailableException e) {
-            System.out.println("Audio is unavailable");
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error reading audio file");
         }
     }

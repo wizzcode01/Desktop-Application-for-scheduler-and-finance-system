@@ -23,13 +23,16 @@ public class CompletedScreen {
         TableColumn<Task, String> timeCol = new TableColumn<>("Alarm Time");
         timeCol.setCellValueFactory(new PropertyValueFactory<>("alarmTime"));
 
-        table.getColumns().addAll(taskCol, timeCol);
+        TableColumn<Task, String> dateCol = new TableColumn<>("Date Added");
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("dateAdded"));
+
+        table.getColumns().addAll(taskCol, timeCol, dateCol);
 
         // Load only completed tasks
         taskManager.loadCompletedTasksIntoTable(table);
 
         // Mark as complete button
-        Button markBtn = new Button("✅ Mark Selected as Completed");
+        Button markBtn = new Button("Mark Selected as Completed");
         markBtn.setStyle("-fx-background-color: #27AE60; -fx-text-fill: white; -fx-cursor: hand;");
 
         Label statusLabel = new Label("");
