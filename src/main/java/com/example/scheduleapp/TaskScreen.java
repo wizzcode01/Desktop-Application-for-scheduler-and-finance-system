@@ -20,7 +20,20 @@ public class TaskScreen {
     public TaskScreen(TaskManager taskManager){
         this.taskManager = taskManager;
     }
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+   // private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    private LocalTime parseFlexibleTime(String input){
+        try{
+            return LocalTime.parse(input, DateTimeFormatter.ofPattern("HH:mm:ss") );
+
+        } catch (Exception e) {
+            try{
+                return LocalTime.parse(input, DateTimeFormatter.ofPattern("HH:mm"));
+            }catch (Exception e2){
+                throw new RuntimeException("Invalid time format");
+            }
+        }
+    }
 
     public VBox getScreen(){
         Label header = new Label("Add New Task");
@@ -31,8 +44,34 @@ public class TaskScreen {
         taskInput.setPrefWidth(250);
 
         TextField timeInput = new TextField();
-        timeInput.setPromptText("Set alarm time your task e.g 14:30:00");
+        timeInput.setPromptText("e.g 14:30 or 09:30");
         timeInput.setPrefWidth(200);
+
+        Label timeHint = new Label("ℹ️ Use 24hr format: 09:00 = 9AM, 14:00 = 2PM, 20:00 = 8PM");
+        timeHint.setStyle("-fx-text-fill: #888888; -fx-font-size: 11px;");
+
+        Label timePreview = new Label("");
+        timePreview.setStyle("-fx-text-fill: #2980B9; -fx-font-size: 12px");
+
+        timeInput.textProperty().addListener((obs, oldVal, newVal) -> {
+            if(newVal.trim().isEmpty()){
+                timePreview.setText("");
+            }
+            try{
+                LocalTime parsed = parseFlexibleTime(newVal.trim());
+
+                String ampm = parsed.getHour() < 12 ? "AM" : "PM";
+                int hour12 = parsed.getHour() % 12;
+                if(hour12 == 0) hour12 = 12;
+                timePreview.setText("⏰ Alarm will ring at: "
+                        + String.format("%d:%02d %s", hour12, parsed.getMinute(), ampm));
+                timePreview.setTextFill(Color.valueOf("#2980B9"));
+            }catch(Exception e){
+                timePreview.setText("❌ Invalid format. Use HH:MM e.g. 14:00");
+                timePreview.setTextFill(Color.RED);
+            }
+        });
+
 
         Button addBtn = new Button("+ Add Task");
         addBtn.setStyle("-fx-background-color: #2C3E50; -fx-text-fill: white;" +
@@ -75,7 +114,7 @@ public class TaskScreen {
             }
 
             try{
-                LocalTime alarmTime = LocalTime.parse(time, formatter);
+                LocalTime alarmTime = parseFlexibleTime(time);
                 Task task = new Task(taskName, alarmTime);
                 task.updateStatus();
                 table.getItems().add(task);
@@ -104,7 +143,7 @@ public class TaskScreen {
             return t2.getAlarmTime().compareTo(t1.getAlarmTime());
         });
 
-        VBox screen = new VBox(15, header, inputRow, table, statusLabel);
+        VBox screen = new VBox(15, header, inputRow, timeHint, timePreview, table, statusLabel);
         screen.setPadding(new Insets(25));
         VBox.setVgrow(table, Priority.ALWAYS);
         return screen;
