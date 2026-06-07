@@ -7,7 +7,10 @@ import javafx.scene.layout.*;
 
 public class CompletedScreen {
 
-    private final TaskManager taskManager = new TaskManager();
+    private final TaskManager taskManager;
+    public CompletedScreen(TaskManager taskManager){
+        this.taskManager = taskManager;
+    }
 
     public VBox getScreen() {
         Label header = new Label("Completed Tasks");
@@ -24,32 +27,28 @@ public class CompletedScreen {
         timeCol.setCellValueFactory(new PropertyValueFactory<>("alarmTime"));
 
         TableColumn<Task, String> dateCol = new TableColumn<>("Date Added");
-        dateCol.setCellValueFactory(new PropertyValueFactory<>("dateAdded"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
 
         table.getColumns().addAll(taskCol, timeCol, dateCol);
 
         // Load only completed tasks
         taskManager.loadCompletedTasksIntoTable(table);
 
-        // Mark as complete button
-        Button markBtn = new Button("Mark Selected as Completed");
-        markBtn.setStyle("-fx-background-color: #27AE60; -fx-text-fill: white; -fx-cursor: hand;");
-
         Label statusLabel = new Label("");
 
-        markBtn.setOnAction(e -> {
-            Task selected = table.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                taskManager.markTaskCompleteFromUI(selected);
-                selected.setStatus("completed");
-                table.refresh();
-                statusLabel.setText("✅ Marked as completed.");
-            } else {
-                statusLabel.setText("❌ Select a task first.");
-            }
-        });
+//        markBtn.setOnAction(e -> {
+//            Task selected = table.getSelectionModel().getSelectedItem();
+//            if (selected != null) {
+//                taskManager.markTaskCompleteFromUI(selected);
+//                selected.setStatus("completed");
+//                table.refresh();
+//                statusLabel.setText("✅ Marked as completed.");
+//            } else {
+//                statusLabel.setText("❌ Select a task first.");
+//            }
+//        });
 
-        VBox screen = new VBox(15, header, table, markBtn, statusLabel);
+        VBox screen = new VBox(15, header, table, statusLabel);
         screen.setPadding(new Insets(25));
         VBox.setVgrow(table, Priority.ALWAYS);
         return screen;

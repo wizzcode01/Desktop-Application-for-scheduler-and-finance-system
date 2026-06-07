@@ -35,11 +35,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
    @Override
    public void start(Stage primaryStage){
-//          Parent root = FXMLLoader.load(getClass().getResource("/hello-view.fxml"));
-//          Scene scene = new Scene(root, 400, 400);
-//         // scene.getStylesheets().add(String.valueOf(getClass().getResource("application.css ")));
-//          primaryStage.setScene(scene);
-//          primaryStage.show();
+       TaskManager taskManager = new TaskManager();
+
        Label title = new Label("Welcome to wiSchedule");
        title.setStyle("-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: white;");
        HBox titleBar = new HBox(title);
@@ -47,10 +44,10 @@ public class Main extends Application {
        titleBar.setPadding(new Insets(15));
 
        // SIDEBAR BUTTONS
-       Button tasksBtn = new Button("📋 Add todo tasks");
+       Button tasksBtn = new Button("📋 Add today tasks");
        Button financeBtn = new Button("💰 Your finance");
        Button completedBtn = new Button("✅ Completed tasks");
-       Button ListAllBtn = new Button("📋 All todo tasks");
+       Button ListAllBtn = new Button("📋 All tasks");
        Button Notification = new Button("🔔 Notifications");
 
 
@@ -77,10 +74,10 @@ public class Main extends Application {
        StackPane center = new StackPane(content);
 
        // SCREENS
-       TaskScreen taskScreen = new TaskScreen();
-       AllTasksScreen allTasksScreen = new AllTasksScreen();
+       TaskScreen taskScreen = new TaskScreen(taskManager);
+       AllTasksScreen allTasksScreen = new AllTasksScreen(taskManager);
        FinanceScreen financeScreen = new FinanceScreen();
-       CompletedScreen completedScreen = new CompletedScreen();
+       CompletedScreen completedScreen = new CompletedScreen(taskManager);
 
        // ROOT LAYOUT
        BorderPane root = new BorderPane();

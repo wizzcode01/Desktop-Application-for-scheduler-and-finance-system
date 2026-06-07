@@ -16,7 +16,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class TaskScreen {
-    private final TaskManager taskManager = new TaskManager();
+    private final TaskManager taskManager;
+    public TaskScreen(TaskManager taskManager){
+        this.taskManager = taskManager;
+    }
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public VBox getScreen(){
@@ -50,7 +53,7 @@ public class TaskScreen {
         timeCol.setCellValueFactory(new PropertyValueFactory<>("alarmTime"));
 
         TableColumn<Task, String> dateCol = new TableColumn<>("Date Added");
-        dateCol.setCellValueFactory(new PropertyValueFactory<>("dateAdded"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
 
         TableColumn<Task, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));

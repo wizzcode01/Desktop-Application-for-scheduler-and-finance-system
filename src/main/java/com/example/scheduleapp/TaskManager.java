@@ -2,10 +2,8 @@ package com.example.scheduleapp;
 
 //import javafx.concurrent.Task;
 import com.example.scheduleapp.Task;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -14,6 +12,46 @@ public class TaskManager {
     String filePath = "C:\\Users\\HomePC\\Downloads\\file_example_WAV_1MG.wav";
     String writeFilePath = "c:\\Users\\HomePC\\Desktop\\task-db.txt";
     private ArrayList<Task> tasks = new ArrayList<>();
+
+    public TaskManager(){
+        loadTaskFromFile();
+    }
+    private void loadTaskFromFile(){
+        try(BufferedReader reader = new BufferedReader(new FileReader(writeFilePath)) ){
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty()) {
+                    continue;
+                }
+                String[] parts = line.split("\\|");
+                if (parts.length >= 2) {
+                    String name = parts[0].trim();
+                    String time = parts[1].trim();
+
+                    Task task = new Task(name, LocalTime.parse(time));
+                    if(parts.length >= 3){
+                        try {
+                            task.setDate(LocalDate.parse(parts[2].trim()));
+                        }catch (Exception e){
+                            task.setDate(LocalDate.now());
+                        }
+                    }
+                    if(parts.length >= 4){
+                        task.setStatus(parts[3].trim());
+                    }
+                    task.updateStatus();
+                    tasks.add(task);
+                }
+                }
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void addTaskFromUI(Task task){
         tasks.add(task);
@@ -27,35 +65,45 @@ public class TaskManager {
     }
 
     public void loadTasksIntoTable(javafx.scene.control.TableView<Task> table) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(writeFilePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
-                String[] parts = line.split("\\|");
-                if (parts.length >= 2) {
-                    String name = parts[0].trim();
-                    String time = parts[1].trim();
-                    // String status = parts[2].trim();
-
-                    Task task = new Task(name, LocalTime.parse(time));
-                    if(parts.length >= 3 && !parts[2].trim().isEmpty()){
-                        try{
-                            task.setDate(LocalDate.parse(parts[2].trim()));
-                        }catch(Exception e){
-                            task.setDate(LocalDate.now());
-                        }
-                    }
-
-                    task.updateStatus();
-                    table.getItems().add(task);
-                }
+        table.getItems().clear();
+        for(Task t : tasks){
+            if(!t.getStatus().equalsIgnoreCase("completed")){
+                t.updateStatus();
+                table.getItems().add(t);
             }
-        } catch (Exception e) {
-            System.out.println("No saved tasks found.");
         }
+
+
+//        try (BufferedReader reader = new BufferedReader(new FileReader(writeFilePath))) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                line = line.trim();
+//                if (line.isEmpty()) {
+//                    continue;
+//                }
+//                String[] parts = line.split("\\|");
+//                if (parts.length >= 2) {
+//                    String name = parts[0].trim();
+//                    String time = parts[1].trim();
+//                    // String status = parts[2].trim();
+//
+//                    Task task = new Task(name, LocalTime.parse(time));
+//                    if(parts.length >= 3 && !parts[2].trim().isEmpty()){
+//                        try{
+//                            task.setDate(LocalDate.parse(parts[2].trim()));
+//                        }catch(Exception e){
+//                            task.setDate(LocalDate.now());
+//                        }
+//                    }
+//
+//                    task.updateStatus();
+//                    table.getItems().add(task);
+//                }
+//            }
+//        } catch (Exception e) {
+//            System.out.println("No saved tasks found.");
+//        }
+
     }
 
     public void deleteTaskFromUI(Task taskToDelete){
@@ -64,41 +112,46 @@ public class TaskManager {
     }
 
     public void markTaskCompleteFromUI(Task taskToComplete){
-       for(Task t : tasks){
-           if(t.getTask().equals(taskToComplete.getTask())){
+        for(Task t : tasks){
+           if(t.getTask().equalsIgnoreCase(taskToComplete.getTask())){
                t.setStatus("completed");
            }
        }
-
        saveTasksToFile();
     }
 
     public void loadCompletedTasksIntoTable(javafx.scene.control.TableView<Task> table) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(writeFilePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty()) continue;
-                String[] parts = line.split("\\|");
-                if (parts.length >= 3 && parts[2].trim().equalsIgnoreCase("completed")) {
-                    Task task = new Task(parts[0].trim(), LocalTime.parse(parts[1].trim()));
-
-                    // load saved date if it exists, otherwise use today
-                    if (parts.length >= 3 && !parts[2].trim().isEmpty()) {
-                        try {
-                            task.setDate(LocalDate.parse(parts[2].trim()));
-                        } catch (Exception e) {
-                            task.setDate(LocalDate.now());
-                        }
-                    }
-
-                    task.setStatus("completed");
-                    table.getItems().add(task);
-                }
+        table.getItems().clear();
+        for(Task data : tasks){
+            if(data.getStatus().equalsIgnoreCase("completed")){
+                table.getItems().add(data);
             }
-        } catch (Exception e) {
-            System.out.println("No completed tasks found.");
         }
+//        try (BufferedReader reader = new BufferedReader(new FileReader(writeFilePath))) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                line = line.trim();
+//                if (line.isEmpty()) continue;
+//                String[] parts = line.split("\\|");
+//                if (parts.length >= 3 && parts[2].trim().equalsIgnoreCase("completed")) {
+//                    Task task = new Task(parts[0].trim(), LocalTime.parse(parts[1].trim()));
+//
+//                    // load saved date if it exists, otherwise use today
+//                    if (parts.length >= 3 && !parts[2].trim().isEmpty()) {
+//                        try {
+//                            task.setDate(LocalDate.parse(parts[2].trim()));
+//                        } catch (Exception e) {
+//                            task.setDate(LocalDate.now());
+//                        }
+//                    }
+//
+//                    task.setStatus("completed");
+//                    table.getItems().add(task);
+//                }
+//            }
+//        } catch (Exception e) {
+//            System.out.println("No completed tasks found.");
+//        }
     }
 
     private void saveTasksToFile() {
